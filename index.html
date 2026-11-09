@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>祭典射的 — WebXR Shooting Gallery</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<button id="vr">進入 VR</button>
+<div id="hint">點擊畫面鎖定滑鼠（Esc 解除）。左鍵開槍，右鍵按住瞄準，用槍口前端那根準星對準獎品，每發要上膛。只有 6 發，打完按 R 重來。</div>
+
+<!-- 依賴以固定版本從 CDN 載入(UMD 全域變數 THREE / CANNON)，不需要打包工具 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
