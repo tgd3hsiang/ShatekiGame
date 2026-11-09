@@ -14,14 +14,14 @@ export function drawBoard(){
   ctx.strokeStyle='#ffb347'; ctx.lineWidth=8; ctx.strokeRect(6,6,628,268);
   ctx.textAlign='center'; ctx.fillStyle='#fff4e0';
   if(S.phase==='over'){
-    ctx.font='bold 54px sans-serif'; ctx.fillText('6 發結束',320,95);
-    ctx.font='bold 84px sans-serif'; ctx.fillStyle='#ffb347'; ctx.fillText(S.score+' 分',320,190);
-    ctx.font='28px sans-serif'; ctx.fillStyle='#fff4e0'; ctx.fillText('按 R（VR 按握把鍵）重新開始',320,247);
+    ctx.font='bold 54px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillText('6発終了',320,95);
+    ctx.font='bold 84px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#ffb347'; ctx.fillText(S.score+' 点',320,190);
+    ctx.font='28px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#fff4e0'; ctx.fillText('Rでやり直し（VRはグリップボタン）',320,247);
   } else {
-    ctx.font='28px sans-serif'; ctx.fillText('分數',160,52); ctx.fillText('剩餘發數',480,52);
-    ctx.font='bold 92px sans-serif'; ctx.fillStyle='#ffb347';
+    ctx.font='28px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillText('スコア',160,52); ctx.fillText('残り弾数',480,52);
+    ctx.font='bold 92px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#ffb347';
     ctx.fillText(S.score,160,142); ctx.fillText(S.ammo,480,142);
-    ctx.font='bold 34px sans-serif'; ctx.fillStyle='#fff4e0';
+    ctx.font='bold 34px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#fff4e0';
     ctx.fillText(S.msg,320,225);
   }
   tex.needsUpdate = true;

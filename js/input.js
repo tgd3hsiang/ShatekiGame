@@ -71,7 +71,7 @@ export function initInput(){
         try{
           const s = await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor']});
           renderer.xr.setSession(s);
-        }catch(err){ alert('無法啟動 VR：'+err.message); }
+        }catch(err){ alert('VRを開始できません：'+err.message); }
       };
     }).catch(()=>{});
   }

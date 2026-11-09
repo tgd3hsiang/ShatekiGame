@@ -10,7 +10,7 @@ export function restart(){
   prizes.splice(0).forEach(p=>{world.removeBody(p.body);scene.remove(p.mesh)});
   corks.splice(0).forEach(c=>{world.removeBody(c.body);scene.remove(c.mesh)});
   S.ammo=MAX_AMMO; S.score=0; S.phase='ready'; S.endT=0; S.cockT=0; S.aiming=false;
-  S.msg='點擊鎖定滑鼠，右鍵瞄準';
+  S.msg='クリックで開始、右クリックで構え';
   spawnPrizes(); drawBoard();
 }
 
@@ -32,7 +32,7 @@ export function updateGame(dt){
     p.mesh.position.copy(p.body.position); p.mesh.quaternion.copy(p.body.quaternion);
     if(!p.scored && p.body.position.y<0.4){
       p.scored=true;
-      if(S.phase==='playing'){ S.score+=p.value; S.msg='得分！+'+p.value; sfx('score'); drawBoard(); }
+      if(S.phase==='playing'){ S.score+=p.value; S.msg='獲得！+'+p.value; sfx('score'); drawBoard(); }
     }
     if(p.scored) p.t+=dt;
   }
@@ -46,7 +46,7 @@ export function updateGame(dt){
       const calm = [...c.touched].every(q=>q.scored||q.body.sleepState===CANNON.Body.SLEEPING);
       if(calm || c.age>4){
         c.resolved=true;
-        if(S.score<=c.scoreAtFire){ S.msg = c.touched.size ? '可惜，沒打下來' : '沒打中'; drawBoard(); }
+        if(S.score<=c.scoreAtFire){ S.msg = c.touched.size ? '惜しい！落ちなかった' : 'はずれ'; drawBoard(); }
       }
     }
     if(c.age>4){world.removeBody(c.body);scene.remove(c.mesh);corks.splice(i,1);}
