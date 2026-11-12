@@ -14,6 +14,8 @@ export const SY       = .06;     // 槍口準星頂端高度(槍模型座標)，
 // ---- 難度 ----
 export const HIP_SPREAD = .04;   // 隨機散布(弧度)：腰射
 export const ADS_SPREAD = .004;  // 瞄準
+export const VR_HIP_SPREAD = .02;  // VR：構えていない(グリップを握っていない)ときの散らばり
+export const VR_AIM_GUIDE = true; // VR：構えたとき赤い照準ガイドを出す(本物の射的らしさ重視なら false)
 export const HIP_SWAY   = .022;  // 手晃幅度(弧度)：腰射
 export const ADS_SWAY   = .009;  // 瞄準
 

@@ -1,16 +1,19 @@
 // 遊戲規則：重來、物理步進、得分、每一發的結果判定、結算。
-import { scene, world } from './scene.js';
+import { scene, world, renderer } from './scene.js';
 import { S, prizes, corks } from './state.js';
 import { MAX_AMMO, SAFETY } from './config.js';
 import { spawnPrizes } from './prizes.js';
 import { drawBoard } from './board.js';
 import { sfx } from './audio.js';
 
+// 開始前に出すメッセージ：VR とデスクトップで操作が違う
+export function readyMsg(){ return renderer.xr.isPresenting ? 'トリガーで発射・グリップで構え' : 'クリックで開始、右クリックで構え'; }
+
 export function restart(){
   prizes.splice(0).forEach(p=>{world.removeBody(p.body);scene.remove(p.mesh)});
   corks.splice(0).forEach(c=>{world.removeBody(c.body);scene.remove(c.mesh)});
   S.ammo=MAX_AMMO; S.score=0; S.phase='ready'; S.endT=0; S.cockT=0; S.aiming=false;
-  S.msg='クリックで開始、右クリックで構え';
+  S.msg=readyMsg();
   spawnPrizes(); drawBoard();
 }
 

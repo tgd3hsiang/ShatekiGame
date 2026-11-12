@@ -2,8 +2,9 @@
 import { renderer, dom, rig } from './scene.js';
 import { S } from './state.js';
 import { gun, makeGun, fire } from './gun.js';
-import { restart } from './game.js';
-import { HIP_SPREAD, ADS_SPREAD } from './config.js';
+import { restart, readyMsg } from './game.js';
+import { drawBoard } from './board.js';
+import { HIP_SPREAD, ADS_SPREAD, VR_HIP_SPREAD, VR_AIM_GUIDE, ZERO } from './config.js';
 
 const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 const deskSpread = ()=>HIP_SPREAD*(1-S.ads)+ADS_SPREAD*S.ads;
@@ -55,13 +56,28 @@ export function initInput(){
 
   addEventListener('keydown',e=>{ if(e.key==='r'||e.key==='R') restart(); });
 
-  // ---- VR：手把上是同一把槍；扳機開槍，握把鍵在結算後重來 ----
+  // ---- VR：トリガー＝発射、グリップ長押し＝構え、A/B/X/Y ボタン＝やり直し(updateInput) ----
   for(let i=0;i<2;i++){
     const c = renderer.xr.getController(i);
     const g = makeGun(); g.scale.setScalar(.6); c.add(g); rig.add(c);
-    c.addEventListener('selectstart',()=>fire(g.userData.muzzle,.01));
-    c.addEventListener('squeezestart',()=>{ if(S.phase==='over') restart(); });
+    // 構えている間だけ出る照準ガイド：銃口からゼロイン距離まで伸びる赤い線と点
+    const guide = new THREE.Group(); guide.visible = false; c.add(guide);
+    const muzzlePos = new THREE.Vector3(0,.012,-.264), farPos = new THREE.Vector3(0,.012,-ZERO);   // 銃口は銃モデルの .6 倍
+    guide.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([muzzlePos,farPos]),new THREE.LineBasicMaterial({color:0xff3030,transparent:true,opacity:.55})));
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(.015,10,8),new THREE.MeshBasicMaterial({color:0xff3030})); dot.position.copy(farPos); guide.add(dot);
+    let aim = false;
+    c.addEventListener('squeezestart',()=>{ aim = true; guide.visible = VR_AIM_GUIDE; });
+    c.addEventListener('squeezeend',()=>{ aim = false; guide.visible = false; });
+    c.addEventListener('selectstart',ev=>{
+      fire(g.userData.muzzle, aim ? ADS_SPREAD : VR_HIP_SPREAD);
+      const h = ev.data && ev.data.gamepad && ev.data.gamepad.hapticActuators;     // コントローラーを振動させる
+      try{ if(h && h[0]) h[0].pulse(.6,40); }catch(_){}
+    });
   }
+  // VR に入った／出たとき、スコアボードの案内文を切り替える
+  const refreshBoard = ()=>{ if(S.phase==='ready') S.msg = readyMsg(); drawBoard(); };
+  renderer.xr.addEventListener('sessionstart',refreshBoard);
+  renderer.xr.addEventListener('sessionend',refreshBoard);
   const vrBtn = document.getElementById('vr');
   if(navigator.xr){
     navigator.xr.isSessionSupported('immersive-vr').then(ok=>{
@@ -75,4 +91,18 @@ export function initInput(){
       };
     }).catch(()=>{});
   }
+}
+
+// 毎フレーム呼ぶ：A/B/X/Y ボタンが押された瞬間にやり直し(デスクトップの R キーと同じ。いつでも有効)
+let prevReset = false;
+export function updateInput(){
+  const sess = renderer.xr.getSession && renderer.xr.getSession();
+  if(!sess) return;
+  let down = false;
+  for(const src of sess.inputSources){
+    const b = src.gamepad && src.gamepad.buttons;      // xr-standard: [4]=A/X、[5]=B/Y
+    if(b && ((b[4]&&b[4].pressed) || (b[5]&&b[5].pressed))) down = true;
+  }
+  if(down && !prevReset) restart();
+  prevReset = down;
 }

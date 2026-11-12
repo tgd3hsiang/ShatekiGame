@@ -1,6 +1,6 @@
 // 計分板：畫在 Canvas 上當貼圖，桌面與 VR 都看得到。
 // 只在事件發生時重畫(開槍、得分、這發結果確定、結算)，不靠計時更新。
-import { scene } from './scene.js';
+import { scene, renderer } from './scene.js';
 import { S } from './state.js';
 
 const cv = document.createElement('canvas'); cv.width = 640; cv.height = 280;
@@ -16,7 +16,7 @@ export function drawBoard(){
   if(S.phase==='over'){
     ctx.font='bold 54px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillText('6発終了',320,95);
     ctx.font='bold 84px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#ffb347'; ctx.fillText(S.score+' 点',320,190);
-    ctx.font='28px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#fff4e0'; ctx.fillText('Rでやり直し（VRはグリップボタン）',320,247);
+    ctx.font='28px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#fff4e0'; ctx.fillText((renderer.xr.isPresenting ? 'A / B / X / Y ボタンでやり直し' : 'Rでやり直し'),320,247);
   } else {
     ctx.font='28px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillText('スコア',160,52); ctx.fillText('残り弾数',480,52);
     ctx.font='bold 92px "Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif'; ctx.fillStyle='#ffb347';
